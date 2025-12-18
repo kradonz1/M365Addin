@@ -78,7 +78,7 @@
             Office.onReady(function(t) {
                 if (t.host === Office.HostType.Outlook) {
                     document.getElementById("sideload-msg").style.display = "none", document.getElementById("app-body").style.display = "flex", document.getElementById("run").onclick = e;
-                    var n = document.getElementById("composeHelpdesk");
+                    var n = document.getElementById("composeEmergencyNews");
                     n && n.addEventListener("click", o)
                 }
             })
