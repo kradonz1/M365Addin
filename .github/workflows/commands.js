@@ -1,0 +1,2 @@
+Office.onReady(function(){}),Office.actions.associate("prefillTo",function(e){var i=Office.context.mailbox.item;i.notificationMessages.replaceAsync("cmd",{type:Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,message:"COMMAND FIRED"}),i.to.setAsync([{displayName:"Helpdesk",emailAddress:"helpdesk@contoso.com"}],function(){return e.completed()})});
+//# sourceMappingURL=commands.js.map
