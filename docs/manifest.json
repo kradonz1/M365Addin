@@ -9,9 +9,9 @@
     },
     "developer": {
         "name": "Stanley Li",
-        "websiteUrl": "https://www.contoso.com",
-        "privacyUrl": "https://www.contoso.com/privacy",
-        "termsOfUseUrl": "https://www.contoso.com/servicesagreement"
+        "websiteUrl": "https://kradonz1.github.io/M365Addin/",
+        "privacyUrl": "https://kradonz1.github.io/M365Addin/privacy",
+        "termsOfUseUrl": "https://kradonz1.github.io/M365Addin/servicesagreement"
     },
     "name": {
         "short": "Email Prefill Addin",
@@ -26,7 +26,7 @@
         "color": "assets/color.png"
     },
     "accentColor": "#230201",
-    "validDomains": ["contoso.com", "localhost"],
+    "validDomains": ["https://kradonz1.github.io/M365Addin/", "localhost", "githubusercontent", "github", "aresmgmt-dev"],
     "authorization": {
         "permissions": {
             "resourceSpecific": [
@@ -61,7 +61,7 @@
                     "id": "TaskPaneRuntime",
                     "type": "general",
                     "code": {
-                        "page": "https://www.contoso.com/taskpane.html"
+                        "page": "https://kradonz1.github.io/M365Addin/taskpane.html"
                     },
                     "lifetime": "short",
                     "actions": [
@@ -89,15 +89,15 @@
                                     "icons": [
                                         {
                                             "size": 16,
-                                            "url": "https://www.contoso.com/assets/icon-16.png"
+                                            "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-16.png?raw=true"
                                         },
                                         {
                                             "size": 32,
-                                            "url": "https://www.contoso.com/assets/icon-32.png"
+                                            "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-32.png?raw=true"
                                         },
                                         {
                                             "size": 80,
-                                            "url": "https://www.contoso.com/assets/icon-80.png"
+                                            "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-80.png?raw=true"
                                         }
                                     ],
                                     "controls": [
@@ -108,15 +108,15 @@
                                             "icons": [
                                                 {
                                                     "size": 16,
-                                                    "url": "https://www.contoso.com/assets/icon-16.png"
+                                                    "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-16.png?raw=true"
                                                 },
                                                 {
                                                     "size": 32,
-                                                    "url": "https://www.contoso.com/assets/icon-32.png"
+                                                    "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-32.png?raw=true"
                                                 },
                                                 {
                                                     "size": 80,
-                                                    "url": "https://www.contoso.com/assets/icon-80.png"
+                                                    "url": "https://github.com/kradonz1/M365Addin/blob/main/docs/icon-80.png?raw=true"
                                                 }
                                             ],
                                             "supertip": {
