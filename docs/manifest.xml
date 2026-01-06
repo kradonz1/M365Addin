@@ -4,7 +4,7 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Ares Management</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Ares Safety Coalition - Prototype"/>
+  <DisplayName DefaultValue="Report Safety Emergency"/>
   <Description DefaultValue="Report any safety and emergency response related concerns to the Ares Safety Coalition and regional contacts"/>
   <IconUrl DefaultValue="https://kradonz1.github.io/M365Addin/icon-64.png?raw=true"/>
   <HighResolutionIconUrl DefaultValue="https://kradonz1.github.io/M365Addin/icon-128.png?raw=true"/>
