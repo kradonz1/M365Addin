@@ -47,7 +47,7 @@
       }(), t.b = "undefined" != typeof document && document.baseURI || self.location.href,
       function () {
          function o() {
-            var o, e = "AresSafetyCoalition North America-XF-DL@aresmgmt.com";
+            var o, e = "AresSafetyCoalition-SM@aresmgmt.com";
             if ("OutlookWebApp" !== (null === (o = Office.context) || void 0 === o || null === (o = o.mailbox) || void 0 === o || null === (o = o.diagnostics) || void 0 === o ? void 0 : o.hostName)) window.location.href = "mailto:".concat(encodeURIComponent(e));
             else {
                var t = function () {
