@@ -79,11 +79,11 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://kradonz1.github.io/M365Addin/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Ares Saftey Coalition Addin"/>
+        <bt:String id="GroupLabel" DefaultValue="Report Safety Emergency"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Report Safety Emergency"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens a pane displaying all available properties."/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Report any safety and emergency response related concerns to the Ares Safety Coalition and regional contacts"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
