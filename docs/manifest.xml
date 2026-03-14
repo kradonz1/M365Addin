@@ -86,5 +86,16 @@
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Report any safety and emergency response related concerns to the Ares Safety Coalition and regional contacts"/>
       </bt:LongStrings>
     </Resources>
+    <!-- Nested App Authentication: Replace YOUR_AAD_CLIENT_ID in BOTH <Id> and <Resource> below
+         with your Azure AD app registration client ID. Also update taskpane.js and manifest.json. -->
+    <WebApplicationInfo>
+      <Id>YOUR_AAD_CLIENT_ID</Id>
+      <Resource>api://kradonz1.github.io/M365Addin/YOUR_AAD_CLIENT_ID</Resource>
+      <Scopes>
+        <Scope>openid</Scope>
+        <Scope>profile</Scope>
+        <Scope>User.Read</Scope>
+      </Scopes>
+    </WebApplicationInfo>
   </VersionOverrides>
 </OfficeApp>
