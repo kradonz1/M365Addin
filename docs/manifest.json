@@ -35,6 +35,10 @@
             ]
         }
     },
+    "webApplicationInfo": {
+        "id": "YOUR_AAD_CLIENT_ID",
+        "resource": "api://kradonz1.github.io/M365Addin/YOUR_AAD_CLIENT_ID"
+    },
     "extensions": [
         {
             "requirements": {

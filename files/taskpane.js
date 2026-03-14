@@ -1,2 +1,173 @@
-!function(){"use strict";var o={58394:function(o,e,t){o.exports=t.p+"65e947c214b25f4109da.css"},98362:function(o,e,t){o.exports=t.p+"assets/logo-filled.png"}},e={};function t(n){var c=e[n];if(void 0!==c)return c.exports;var i=e[n]={exports:{}};return o[n](i,i.exports,t),i.exports}t.m=o,t.d=function(o,e){for(var n in e)t.o(e,n)&&!t.o(o,n)&&Object.defineProperty(o,n,{enumerable:!0,get:e[n]})},t.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(o){if("object"==typeof window)return window}}(),t.o=function(o,e){return Object.prototype.hasOwnProperty.call(o,e)},function(){var o;t.g.importScripts&&(o=t.g.location+"");var e=t.g.document;if(!o&&e&&(e.currentScript&&"SCRIPT"===e.currentScript.tagName.toUpperCase()&&(o=e.currentScript.src),!o)){var n=e.getElementsByTagName("script");if(n.length)for(var c=n.length-1;c>-1&&(!o||!/^http(s?):/.test(o));)o=n[c--].src}if(!o)throw new Error("Automatic publicPath is not supported in this browser");o=o.replace(/^blob:/,"").replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/[^\/]+$/,"/"),t.p=o}(),t.b="undefined"!=typeof document&&document.baseURI||self.location.href,function(){function o(){var o,e="AresSafetyCoalition North America-XF-DL@aresmgmt.com";if("OutlookWebApp"!==(null===(o=Office.context)||void 0===o||null===(o=o.mailbox)||void 0===o||null===(o=o.diagnostics)||void 0===o?void 0:o.hostName))window.location.href="mailto:".concat(encodeURIComponent(e))+"?subject=".concat(encodeURIComponent(""))+"&body=".concat(encodeURIComponent(""));else{var t=function(){var o,e=null===(o=Office.context)||void 0===o||null===(o=o.mailbox)||void 0===o?void 0:o.restUrl;if(e&&/^https?:\/\//i.test(e))return new URL(e).origin;try{var t,n=null===(t=window.top)||void 0===t||null===(t=t.location)||void 0===t?void 0:t.href;if(n&&/^https?:\/\//i.test(n))return new URL(n).origin}catch(o){}return"https://outlook.office.com"}(),n="".concat(t,"/mail/deeplink/compose")+"?to=".concat(encodeURIComponent(e))+"&subject=".concat(encodeURIComponent(""))+"&body=".concat(encodeURIComponent(""));window.open(n,"_blank","noopener,noreferrer")}}Office.onReady(function(e){if(e.host===Office.HostType.Outlook){var t=Office.context.mailbox.diagnostics;console.log("UPN:",t),console.log("HostName:",t.hostName),console.log("OWA version:",t.hostVersion),document.getElementById("sideload-msg").style.display="none",document.getElementById("app-body").style.display="flex",Office.onReady(function(){document.getElementById("composeEmergencyNews").onclick=o})}})}(),new URL(t(58394),t.b),new URL(t(98362),t.b)}();
-//# sourceMappingURL=taskpane.js.map
+"use strict";
+
+// ---------------------------------------------------------------------------
+// Nested App Authentication (NAA) configuration
+// TODO: Replace YOUR_AAD_CLIENT_ID (both below and in manifest.xml)
+//       with your Azure AD app registration client ID before deploying.
+// The redirect URI registered in Azure AD must include:
+//   api://kradonz1.github.io/M365Addin/YOUR_AAD_CLIENT_ID
+// ---------------------------------------------------------------------------
+var NAA_CLIENT_ID = "YOUR_AAD_CLIENT_ID";
+var NAA_AUTHORITY = "https://login.microsoftonline.com/common";
+var NAA_SCOPES = ["openid", "profile", "User.Read"];
+var SAFETY_EMAIL = "AresSafetyCoalition North America-XF-DL@aresmgmt.com";
+
+var msalInstance = null;
+
+/**
+ * Initialize MSAL using Nested App Authentication (NAA).
+ * NAA lets the Office host broker tokens on behalf of the add-in so that
+ * sign-in dialogs are never shown to the user.
+ * Falls back to the standard PublicClientApplication when NAA is unavailable.
+ */
+async function initMsal() {
+  if (NAA_CLIENT_ID === "YOUR_AAD_CLIENT_ID") {
+    console.error(
+      "NAA: NAA_CLIENT_ID is still a placeholder. " +
+      "Replace YOUR_AAD_CLIENT_ID in taskpane.js and manifest.xml " +
+      "with your Azure AD app registration client ID before deploying."
+    );
+  }
+  var msalConfig = {
+    auth: {
+      clientId: NAA_CLIENT_ID,
+      authority: NAA_AUTHORITY
+    },
+    system: {
+      allowNativeBroker: false
+    }
+  };
+
+  if (typeof msal !== "undefined" && typeof msal.createNestablePublicClientApplication === "function") {
+    try {
+      msalInstance = await msal.createNestablePublicClientApplication(msalConfig);
+      console.log("NAA: initialized via createNestablePublicClientApplication");
+      return;
+    } catch (e) {
+      console.warn("NAA: createNestablePublicClientApplication failed, falling back:", e);
+    }
+  }
+
+  if (typeof msal !== "undefined") {
+    msalInstance = new msal.PublicClientApplication(msalConfig);
+    await msalInstance.initialize();
+    console.log("NAA: initialized via PublicClientApplication (fallback)");
+  }
+}
+
+/**
+ * Acquire an access token.  Attempts a silent request first; falls back to a
+ * popup only when the host cannot broker the token silently.
+ */
+async function acquireToken() {
+  if (!msalInstance) return null;
+
+  var tokenRequest = { scopes: NAA_SCOPES };
+  var accounts = msalInstance.getAllAccounts();
+
+  if (accounts.length > 0) {
+    try {
+      var result = await msalInstance.acquireTokenSilent(
+        Object.assign({}, tokenRequest, { account: accounts[0] })
+      );
+      console.log("NAA: token acquired silently");
+      return result;
+    } catch (silentError) {
+      console.warn("NAA: silent acquisition failed:", silentError.message);
+    }
+  }
+
+  try {
+    var popupResult = await msalInstance.acquireTokenPopup(tokenRequest);
+    console.log("NAA: token acquired via popup");
+    return popupResult;
+  } catch (popupError) {
+    console.error("NAA: popup acquisition failed:", popupError.message);
+    return null;
+  }
+}
+
+/** Show the signed-in user's display name and UPN in the task pane. */
+function displayUserInfo(tokenResponse) {
+  var el = document.getElementById("user-info");
+  if (!el || !tokenResponse || !tokenResponse.account) return;
+  var account = tokenResponse.account;
+  var displayName = account.name || account.username || "Unknown user";
+  var upn = account.username || "";
+
+  // Build DOM nodes to avoid XSS from token response values
+  while (el.firstChild) el.removeChild(el.firstChild);
+  el.appendChild(document.createTextNode("\u2713 Signed in as: "));
+  var strong = document.createElement("strong");
+  strong.textContent = displayName;
+  el.appendChild(strong);
+  if (upn) {
+    el.appendChild(document.createTextNode(" (" + upn + ")"));
+  }
+  el.style.display = "block";
+}
+
+/** Resolve the Outlook Web App (OWA) origin for deep-link compose URLs. */
+function getOwaOrigin() {
+  var restUrl = Office.context && Office.context.mailbox ? Office.context.mailbox.restUrl : null;
+  if (restUrl && /^https?:\/\//i.test(restUrl)) {
+    return new URL(restUrl).origin;
+  }
+  try {
+    var topHref = window.top && window.top.location ? window.top.location.href : null;
+    if (topHref && /^https?:\/\//i.test(topHref)) {
+      return new URL(topHref).origin;
+    }
+  } catch (e) {}
+  return "https://outlook.office.com";
+}
+
+/** Open a pre-filled compose window addressed to the safety coalition. */
+function openPrefilledCompose() {
+  var hostName = Office.context &&
+    Office.context.mailbox &&
+    Office.context.mailbox.diagnostics
+      ? Office.context.mailbox.diagnostics.hostName
+      : null;
+
+  if (hostName !== "OutlookWebApp") {
+    window.location.href = "mailto:" + encodeURIComponent(SAFETY_EMAIL) +
+      "?subject=" + encodeURIComponent("") +
+      "&body=" + encodeURIComponent("");
+  } else {
+    var origin = getOwaOrigin();
+    var url = origin + "/mail/deeplink/compose" +
+      "?to=" + encodeURIComponent(SAFETY_EMAIL) +
+      "&subject=" + encodeURIComponent("") +
+      "&body=" + encodeURIComponent("");
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Entry point
+// ---------------------------------------------------------------------------
+Office.onReady(async function (info) {
+  if (info.host === Office.HostType.Outlook) {
+    var diagnostics = Office.context.mailbox.diagnostics;
+    console.log("UPN:", diagnostics);
+    console.log("HostName:", diagnostics.hostName);
+    console.log("OWA version:", diagnostics.hostVersion);
+
+    document.getElementById("sideload-msg").style.display = "none";
+    document.getElementById("app-body").style.display = "flex";
+
+    // Authenticate with NAA
+    try {
+      await initMsal();
+      var tokenResponse = await acquireToken();
+      if (tokenResponse) {
+        displayUserInfo(tokenResponse);
+      }
+    } catch (authError) {
+      console.error("NAA: authentication failed:", authError);
+    }
+
+    document.getElementById("composeEmergencyNews").onclick = openPrefilledCompose;
+  }
+});
